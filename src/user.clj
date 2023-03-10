@@ -1,4 +1,6 @@
-(ns user) ; Must be ".clj" file, Clojure doesn't auto-load user.cljc
+(ns user
+  (:require [shadow.css.build :as cb]
+            [clojure.java.io :as io]))
 
 ; lazy load dev stuff - for faster REPL startup and cleaner dev classpath
 (def start-electric-server! (delay @(requiring-resolve 'hyperfiddle.electric-jetty-server/start-server!)))
@@ -26,3 +28,24 @@
   ; connect a second REPL instance to it
   ; (DO NOT REUSE JVM REPL it will fail weirdly)
   (type 1))
+
+(defn css-release [& args]
+  (let [build-state
+        (-> (cb/start)
+            (assoc :preflight-src "")
+            (cb/index-path (io/file "src" "app") {})
+            (cb/generate
+              '{:ui
+                {:include
+                 [app.todo-list*]}})
+            (cb/write-outputs-to (io/file "resources" "public" "css")))]
+
+    (doseq [mod (:outputs build-state)
+            {:keys [warning-type] :as warning} (:warnings mod)]
+
+      (prn [:CSS (name warning-type) (dissoc warning :warning-type)]))))
+
+(comment
+  (css-release)
+
+  )
