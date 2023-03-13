@@ -3,8 +3,8 @@
 Steps to reproduce:
 
 * `clj -A:dev -X user/main`
-* connect your repl
-* Eval (css-release) in user.clj
-* now start making edits to css classes and node text in todo_list.cljc
-* you can re-eval css-release whenever to sync your CSS changes to the DOM
-* I've found that at some point all the elements will disappear with display: none CSS attached to them
+* load localhost:8080 in your browser
+* connect your repl to port 9001
+* Eval ``(css-release)`` in user.clj (in the comment block)
+* Now modify the text `Example 1` in todo_list.cljc to `Example 2` and save the file
+* Text should disappear with `display: none`
